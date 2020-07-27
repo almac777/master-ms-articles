@@ -20,7 +20,7 @@ public class DefaultArticleService implements ArticleService {
     private final ArticleToDtoConverter articleToDtoConverter;
 
     @Override
-    public ArticleDto register(ArticleDto articleDto) {
+    public ArticleDto create(ArticleDto articleDto) {
         return Optional.of(articleDto)
                 .map(articleDtoToEntityConverter::convert)
                 .map(articleRepository::save)
@@ -41,5 +41,27 @@ public class DefaultArticleService implements ArticleService {
         return this.articleRepository.findById(id)
                 .map(articleToDtoConverter::convert)
                 .orElseThrow(() -> new RuntimeException(String.format("Article with id %d has not been found", id)));
+    }
+
+    @Override
+    public ArticleDto update(ArticleDto articleDto, Long id) {
+        return Optional.of(this.show(id))
+                .map(article -> this.modifyId(article, id))
+                .map(articleDtoToEntityConverter::convert)
+                .map(articleRepository::save)
+                .map(articleToDtoConverter::convert)
+                .orElseThrow(() -> new RuntimeException(""));
+    }
+
+    @Override
+    public void delete(Long id) {
+        Optional.of(this.show(id))
+                .map(articleDtoToEntityConverter::convert)
+                .ifPresent(articleRepository::delete);
+    }
+
+    private ArticleDto modifyId(ArticleDto articleDto, Long id) {
+        articleDto.setId(id);
+        return articleDto;
     }
 }

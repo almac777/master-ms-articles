@@ -3,9 +3,11 @@ package at.ac.fhcampus.master.micro.article.controllers;
 import at.ac.fhcampus.master.micro.article.dtos.ArticleDto;
 import at.ac.fhcampus.master.micro.article.services.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,12 +30,22 @@ public class ArticleController {
     }
 
     @GetMapping(SHOW_URL)
-    public ArticleDto article(@PathVariable("id") Long id) {
+    public ArticleDto show(@PathVariable("id") Long id) {
         return this.articleService.show(id);
     }
 
     @PostMapping(ROOT_URL)
-    public ArticleDto save(@RequestBody ArticleDto articleDto) {
-        return this.articleService.register(articleDto);
+    public ArticleDto create(@RequestBody ArticleDto articleDto) {
+        return this.articleService.create(articleDto);
+    }
+
+    @PutMapping(SHOW_URL)
+    public ArticleDto update(@RequestBody ArticleDto articleDto, @PathVariable("id") Long id) {
+        return this.articleService.update(articleDto, id);
+    }
+
+    @DeleteMapping(SHOW_URL)
+    public void delete(@PathVariable("id") Long id) {
+        this.articleService.delete(id);
     }
 }
